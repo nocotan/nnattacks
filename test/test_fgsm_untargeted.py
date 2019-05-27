@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import PIL
 import torch
 from torchvision import transforms
 from torchvision import models
 
-from nnattacks.attacks import FastGradientSignTargeted
+from nnattacks.attacks import FastGradientSignUntargeted
 
 
 def main():
@@ -25,13 +24,12 @@ def main():
     inceptionv3.eval()
 
     y_true = torch.max(inceptionv3(x), 1)[1]
-    y_target = torch.LongTensor([385])
 
-    fgsm_targeted = FastGradientSignTargeted(n_iter=10)
+    fgsm_targeted = FastGradientSignUntargeted(n_iter=10)
     x_adv, pertb = fgsm_targeted.generate_perturbation(
         inceptionv3,
         x,
-        y_target)
+        y_true)
 
     y_adv = torch.max(inceptionv3(x_adv), 1)[1][0]
 
