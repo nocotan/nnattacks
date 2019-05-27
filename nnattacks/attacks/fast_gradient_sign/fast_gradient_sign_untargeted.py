@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import tqdm
+from collections import OrderedDict
+
 import torch
 import torch.nn as nn
 from torch.autograd.gradcheck import zero_gradients
@@ -37,5 +39,9 @@ class FastGradientSignUntargeted(BaseAttack):
 
                 grad = torch.sign(x_adv.grad.data)
                 x_adv.data += (self.eps * grad)
+
+                pbar.set_postfix(OrderedDict(
+                    loss="{:.8f}".format(loss.item())
+                ))
 
         return x_adv, grad
