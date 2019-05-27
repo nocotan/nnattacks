@@ -13,19 +13,21 @@ class FastGradientSignTargeted(BaseAttack):
                  alpha: float = 0.025,
                  n_iter: int = 10,
                  eps: float = 0.25,
-                 criterion: nn.Module = nn.CrossEntropyLoss()):
+                 criterion: nn.Module = nn.CrossEntropyLoss(),
+                 device=torch.device("cpu")):
 
         self.alpha = alpha
         self.eps = eps
         self.n_iter = n_iter
         self.criterion = criterion
+        self.device = device
 
     def generate_perturbation(self,
                               model: nn.Module,
                               x: torch.Tensor,
                               y_target: torch.Tensor):
 
-        x_adv = x.clone()
+        x_adv = x.clone().to(self.device)
         x_adv.requires_grad = True
 
         with tqdm.tqdm(range(self.n_iter), ncols=100) as pbar:
