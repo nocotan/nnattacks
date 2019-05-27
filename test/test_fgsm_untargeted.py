@@ -1,4 +1,7 @@
+import urllib
+import pickle
 import PIL
+
 import torch
 from torchvision import transforms
 from torchvision import models
@@ -7,6 +10,8 @@ from nnattacks.attacks import FastGradientSignUntargeted
 
 
 def main():
+    labels = pickle.load(urllib.request.urlopen('https://gist.githubusercontent.com/yrevar/6135f1bd8dcf2e0cc683/raw/d133d61a09d7e5a3b36b8c111a8dd5c4b5d560ee/imagenet1000_clsid_to_human.pkl'))
+
     img = PIL.Image.open("../images/cavy.jpg")
 
     mean = [0.485, 0.456, 0.406]
@@ -33,8 +38,8 @@ def main():
 
     y_adv = torch.max(inceptionv3(x_adv), 1)[1][0]
 
-    print(y_true)
-    print(y_adv)
+    print("original predict: {}".format(labels[y_true.item()]))
+    print("adversarial predict: {}".format(labels[y_adv.item()]))
 
 
 if __name__ == "__main__":
